@@ -14,6 +14,7 @@ function App() {
        <section>
           <div className='content'>
               <span className='slbz'>0</span>
+              <p>NEW TEXT HERE</p>
           </div>
           <div>counter 2</div>
        </section>
