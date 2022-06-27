@@ -15,6 +15,7 @@ function App() {
           <div className='content'>
               <span className='slbz'>0</span>
           </div>
+          <div>counter 2</div>
        </section>
  
     </div>
