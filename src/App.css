@@ -1,15 +1,21 @@
 body,html {
- margin:0;
- padding: 0;
+  margin:0;
+  padding: 10px;
   overflow-x: hidden;
   height: 100%;
 }
+
 * {
   box-sizing: border-box;
 }
-.content {
+ 
+
+.display_postsno {
+  min-height: 50px;
   display: block;
-  width: 100%;
-  min-height: 800px;
-  border:5px solid red;
+ 
 }
+ rect:hover {
+  opacity: 0.9;
+  cursor: pointer;
+ }

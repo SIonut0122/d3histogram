@@ -1,25 +1,42 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
-import { useEffect, useState } from 'react';
+import {ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from '@apollo/client';
+import {onError} from '@apollo/client/link/error';
+import GetPosts from './Components/GetPosts';
+ 
+
+
+// Catch error
+const errorLink = onError(({graphqlErrors, networkError}) => {
+  if(graphqlErrors) {
+    graphqlErrors.map(({message, location, path}) => {
+      console.log(`Graphql error ${message}`);
+    })
+  }
+});
+
+// Create graphql url
+const link = from([
+  errorLink,
+  new HttpLink({ uri: 'https://fakerql.goosfraba.ro/graphql'})
+]);
+
+// Initialize client to check connection
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: link
+});
+
+
+
 
 function App() {
-  const [number, setNumber] = useState(0);
 
-  useEffect(() => {
-    document.querySelector('.slbz').innerHTML = number;
-  })
-
-  return (
-    <div className="App">
-       <section>
-          <div className='content'>
-              <span className='slbz'>0</span>
-          </div>
-          <div>counter 2</div>
-       </section>
- 
-    </div>
-  );
-}
-
-export default App;
+    return (
+      <ApolloProvider client={client}>
+        <GetPosts/>
+      </ApolloProvider>
+    )
+  }
+  
+  export default App;
