@@ -2,12 +2,14 @@ import React, {useEffect, useState} from "react";
 import {useQuery, gql} from '@apollo/client';
 import {LOAD_POSTS} from '../GraphQL/Queries';
 import * as d3 from "https://cdn.skypack.dev/d3@7";
+import histoIcon from '../images/histogram_img.png';
 
 
 function GetPosts() {
 
-    // Get data from API using the apollo useQuery
+    // Get data from API using the Apollo useQuery
     const {error, loading, data} = useQuery(LOAD_POSTS);
+
     const [postsNo, setPostsNo] = useState(0);
     const [errorMsg, setErrorMsg] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -40,7 +42,7 @@ function GetPosts() {
             console.log(`Graphql error ${error}`);
 
         } else if (loading) {
-            // Set loading to true do display messasge
+            // Set loading to true do display message
             setIsLoading(true);
         }
     },[data,isLoading])
@@ -146,42 +148,53 @@ const createChart = (monthsObj) => {
     .attr("stroke-width", 1)   
     .on("mouseover", function() {
         // Get noPost attribute data and use it to display number of posts on hover
-        let cac = d3.select(this).attr("noPosts");
-         setPostsNo(cac);
+        let getPostValue = d3.select(this).attr("noPosts");
+         setPostsNo(getPostValue);
     })
+
+    /* On mouse out, set posts number to 0 to hide 'Number of posts' text*/
     .on("mouseout", function() {setPostsNo(0)}) 
     
+    /* Apply animation for every rect */
     svg.selectAll("rect")
     .transition()
     .duration(800)
     .attr('y', d => yScale(d.posts))
     .attr('height', d => yScale(0) - yScale(d.posts))
-    .delay(function(d,i){console.log(i) ; return(i*100)})
+    .delay(function(d,i){return(i*100)})
     
 }
 
+
+
+
+
     return (
         <div>
-        <div className='display_postsinfo'>
+            <div className='display_postsinfo'>
+                {/* Logo image */}
+                <img src={histoIcon} alt='Histogram logo'/>
+                
+                {/* Display fetch status */}
+                <div className='display_fetchstatus'>Status: 
+                    {errorMsg ? (
+                        <span style={{color: 'red', marginLeft: '5px'}}>Failed</span>
+                    ) : (
+                        <span style={{color:'green', marginLeft: '5px'}}>Ok</span>
+                    )}
+                </div>
+                
+                {/* Display info about number of posts and loading status */}
+                <div>Fetched posts: 100</div>
+                {isLoading && <span>Loading...</span> }
 
-            <div className='display_fetchstatus'>Status: 
-                {errorMsg ? (
-                    <span style={{color: 'red', marginLeft: '5px'}}>Failed</span>
-                ) : (
-                    <span style={{color:'green', marginLeft: '5px'}}>Ok</span>
-                )}
+                {/* On hover over the bars, display number of posts */}
+                <div className='display_postsnumber'>
+                    {postsNo > 0 && 'Number of posts: ' +postsNo}
+                </div>
             </div>
 
-            <div>Fetched posts: 100</div>
-            {isLoading &&
-                <span>Loading...</span>
-            }
-
-            <div className='display_postsnumber'>
-                {postsNo > 0 && 'Number of posts: ' +postsNo}
-            </div>
-        </div>
-
+            {/* If loading, display loading spinner, otherwise display the histogram*/}
             {isLoading ? (
                 <div className='loading_spinner'>
                 <div className='load_spin'><div></div><div></div><div></div></div>
@@ -191,7 +204,7 @@ const createChart = (monthsObj) => {
             )}
 
         </div>
-        )
+    )
 
 }
 

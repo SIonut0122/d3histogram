@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import './App.css';
 import {ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from '@apollo/client';
 import {onError} from '@apollo/client/link/error';
 import GetPosts from './Components/GetPosts';
+import './Main.css';
  
 
 
