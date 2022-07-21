@@ -18,7 +18,7 @@ const errorLink = onError(({graphqlErrors, networkError}) => {
 // Create graphql url
 const link = from([
   errorLink,
-  new HttpLink({ uri: 'https://fakerql.goosfraba.ro/graphql'})
+  new HttpLink({ uri: process.env.REACT_APP_GRAPHQL_API})
 ]);
 
 // Initialize client to check connection
