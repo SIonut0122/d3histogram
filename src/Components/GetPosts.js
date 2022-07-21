@@ -8,7 +8,9 @@ function GetPosts() {
 
     // Get data from API using the apollo useQuery
     const {error, loading, data} = useQuery(LOAD_POSTS);
-    const [postsNo, setPostsNo] = useState(0)
+    const [postsNo, setPostsNo] = useState(0);
+    const [errorMsg, setErrorMsg] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
 
 
@@ -28,9 +30,20 @@ function GetPosts() {
             }
             
             // Call function to sort and reorder the object by passing received data (dPosts) and monthNames
-            sortPosts(dPosts, monthNames)
+            sortPosts(dPosts, monthNames);
+            // After data is received, set loading to false
+            setIsLoading(false);
+
+        } else if (error) {
+            // If there is no data, set error boolean to true and console log info
+            setErrorMsg(true);
+            console.log(`Graphql error ${error}`);
+
+        } else if (loading) {
+            // Set loading to true do display messasge
+            setIsLoading(true);
         }
-    },[data])
+    },[data,isLoading])
 
 
   const sortPosts = (dbPosts, monthNames) => {
@@ -73,7 +86,7 @@ const createChart = (monthsObj) => {
      // Create svg that holds the chart
      const svg = d3.select('#histogram')
      .append('svg')
-     .style('background-color', 'white')
+     .style('background-color', '#f7f7f7')
      .attr('width', width)
      .attr('height', height)
      .append('g')
@@ -121,10 +134,10 @@ const createChart = (monthsObj) => {
     .data(monthsObj)
     .enter().append("rect")
     .attr('x', d => xScale(d.month))
-    .attr('y', d => yScale(d.posts))
+    .attr('y', d => yScale(0))
     .attr('noPosts', d => (d.posts))
     .attr('width', xScale.bandwidth())
-    .attr('height', d => yScale(0) - yScale(d.posts))
+    .attr('height', d => yScale(0) - yScale(0))
     .style("padding", "3px")
     .style("margin", "1px")
     .style("width", d => `${d * 10}px`)
@@ -132,16 +145,51 @@ const createChart = (monthsObj) => {
     .attr("stroke", "black")
     .attr("stroke-width", 1)   
     .on("mouseover", function() {
+        // Get noPost attribute data and use it to display number of posts on hover
         let cac = d3.select(this).attr("noPosts");
          setPostsNo(cac);
     })
     .on("mouseout", function() {setPostsNo(0)}) 
+    
+    svg.selectAll("rect")
+    .transition()
+    .duration(800)
+    .attr('y', d => yScale(d.posts))
+    .attr('height', d => yScale(0) - yScale(d.posts))
+    .delay(function(d,i){console.log(i) ; return(i*100)})
+    
 }
 
     return (
         <div>
-            <h1 className='display_postsno'>{postsNo > 0 && 'Number of posts: ' +postsNo}</h1>
-           <div id='histogram'/>
+        <div className='display_postsinfo'>
+
+            <div className='display_fetchstatus'>Status: 
+                {errorMsg ? (
+                    <span style={{color: 'red', marginLeft: '5px'}}>Failed</span>
+                ) : (
+                    <span style={{color:'green', marginLeft: '5px'}}>Ok</span>
+                )}
+            </div>
+
+            <div>Fetched posts: 100</div>
+            {isLoading &&
+                <span>Loading...</span>
+            }
+
+            <div className='display_postsnumber'>
+                {postsNo > 0 && 'Number of posts: ' +postsNo}
+            </div>
+        </div>
+
+            {isLoading ? (
+                <div className='loading_spinner'>
+                <div className='load_spin'><div></div><div></div><div></div></div>
+                </div>
+            ) : (
+                <div id='histogram'/>
+            )}
+
         </div>
         )
 

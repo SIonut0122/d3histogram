@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-// Fetch 100 posts by id and createdAt queries
+// Fetch 100 posts using 'id' and 'createAt' queries
 export const LOAD_POSTS = gql`   
     query {    
         allPosts(count: 100) {

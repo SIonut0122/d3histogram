@@ -30,7 +30,7 @@ const client = new ApolloClient({
 
 
 
-function App() {
+function Main() {
 
     return (
       <ApolloProvider client={client}>
@@ -39,4 +39,4 @@ function App() {
     )
   }
   
-  export default App;
+  export default Main;
