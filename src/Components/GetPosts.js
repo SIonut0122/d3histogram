@@ -185,7 +185,7 @@ const createChart = (monthsObj) => {
                 </div>
                 
                 {/* Display info about number of posts and loading status */}
-                <div>Fetched posts: 100</div>
+                <div>Received posts: 100</div>
                 {isLoading && <span>Loading...</span> }
 
                 {/* On hover over the bars, display number of posts */}
